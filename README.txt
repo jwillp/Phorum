@@ -1,0 +1,1 @@
+# ATTENTION il est important d'activer le module APACHE: rewrite_module

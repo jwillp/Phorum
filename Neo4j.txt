@@ -1,0 +1,8 @@
+
+
+#VIDER BD
+MATCH (n)
+DELETE n;
+
+#CRÉER UN NODE
+CREATE (n:NomNode {champ: "valeur"})

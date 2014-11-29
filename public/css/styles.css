@@ -1,0 +1,51 @@
+/* 
+    Created on : 2014-11-28
+    Author     : Jean-William Perreault
+*/
+
+
+body{
+    background-image: url('footer_lodyas.png');
+}
+
+#wrapper{
+    
+    width: 80%;
+    margin: auto;
+    margin-top: 50px;
+    
+    
+    background-color: #000;
+    -webkit-box-shadow: 0px 0px 17px -1px rgba(0,0,0,1);
+    -moz-box-shadow: 0px 0px 17px -1px rgba(0,0,0,1);
+    box-shadow: 0px 0px 17px -1px rgba(0,0,0,1);
+
+}
+
+#header{
+    height: 100px;
+    background-color: #269abc;
+    color: #fff;
+}
+
+#header .nav-pills>li>a{
+    color: #337ab7;
+    background-color: #fff;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+#header ul{
+    margin-right: 10px;
+}
+
+
+
+#body-page{
+    background-color: #fff;
+    min-height: 500px;
+}
+
+#footer{
+    height: 200px;
+}
