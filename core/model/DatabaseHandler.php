@@ -51,11 +51,18 @@ class DatabaseHandler
      * @return type
      */
     public static function createUser($userName, $password, $email){
+       $client = DatabaseHandler::getInstance();
        $queryString = "CREATE (n:User {username: {username}, 
            password: {pass}, 
-           email: {email} });";
+           email: {email} })
+           RETURN n;";
        
-       $query = new Everyman\Neo4j\Cypher\Query($client, $queryString, array('title' => $title));
+       $param = array(
+           'username' => $userName,
+           'pass' => $password,
+           'email' => $email  
+        );
+       $query = new Everyman\Neo4j\Cypher\Query($client, $queryString, $param);
        $result = $query->getResultSet();
        foreach ($result as $row) {
            return $row['User']->getId();
@@ -98,7 +105,94 @@ class DatabaseHandler
     
     
     
+    /**
+     * Retourne la totalité des Threads
+     */
+    public static function getThreads(){
+        $client = DatabaseHandler::getInstance();
+        $queryString = "MATCH (n:Thread)
+                        RETURN n";
+        $query = new Everyman\Neo4j\Cypher\Query($client, $queryString);
+        
+        $threads = array();
+        $result = $query->getResultSet();
+        foreach ($result as $row) {
+           $threads[] = $row['Thread'];
+        }  
+        return $threads;
+    }
+    
+    /**
+     * Retourne un thread selon son Id
+     * @param type $threadId le Id du thread voulu
+     */
+    public static function getThread($threadId){
+        $client = DatabaseHandler::getInstance();
+        $queryString = "MATCH (n:Thread)
+                        WHERE n.uid = {uid}
+                        RETURN n";
+        $param = array(
+            'uid' => $threadId,
+        );
+        $query = new Everyman\Neo4j\Cypher\Query($client, $queryString, $param);
+        $result = $query->getResultSet();
+        foreach ($result as $row) {
+           return $row['n'];
+        }  
+    }
+    
+    
+    
+    /**
+     * Retournel les post dans l'ordre d'un Thread
+     * Avec son auteur array('info', 'author')
+     * @param type $threadUid
+     * @return type
+     */
+    public static function getPosts($threadUid){
+        $client = DatabaseHandler::getInstance();
+        $queryString = "MATCH (t:Thread)
+                        WHERE t.uid = {uid}
+                        MATCH (t)-[:PRECEDES*]->(b:Post),  (b:Post)-[:WRITTEN_BY]->(u:User)
+                        return distinct b, u;";
+        
+        $param = array(
+            'uid' => $threadUid,
+        );
+        $query = new Everyman\Neo4j\Cypher\Query($client, $queryString, $param);
+        $result = $query->getResultSet();
+        $posts = array();
+        foreach ($result as $row) {
+            $post = array(
+                'info' => $row['b'],
+                'author' => $row['u'],
+            );
+           $posts[] = $post;
+        }  
+        return $posts;
+    }
+    
+    
+    public static function getThreadAuthor($threadUid){
+        $client = DatabaseHandler::getInstance();
+        $queryString = "MATCH (t:Thread)
+                        WHERE t.uid = {uid}
+                        match (t)-[:PRECEDES*]->(b:Post)
+                        return distinct b;";
+        
+        $param = array(
+            'uid' => $threadUid,
+        );
+        $query = new Everyman\Neo4j\Cypher\Query($client, $queryString, $param);
+        $result = $query->getResultSet();
+        $posts = array();
+        foreach ($result as $row) {
+           $posts[] = $row['x'];
+        }  
+        return $posts;
 
+    }
+    
     
     
     /**
@@ -108,43 +202,43 @@ class DatabaseHandler
      */
     public static function createThread($title){
         $client = DatabaseHandler::getInstance();
-        $queryString = "CREATE (n:Thread {title: {title} }) RETURN n";
-        $query = new Everyman\Neo4j\Cypher\Query($client, $queryString, array('title' => $title));
+        $queryString = "CREATE (n:Thread { uid: {uid}, title: {title} })-[:PRECEDES]->(n)
+                        RETURN n";
+        
+        
+        $param = array(
+            'title' => $title,
+            'uid' => uniqid()
+        );
+        
+        $query = new Everyman\Neo4j\Cypher\Query($client, $queryString, $param);
+        
+        
         $result = $query->getResultSet();
         foreach ($result as $row) {
-           return $row['Thread']->getId();
+           return $row['Thread']->getProperty('uid');
         }  
     }
-    
-    public static function createFirstPost($text, $author, $threadId){
-        "
-        MATCH (node), (user:User)
-        WHERE ID(node) = 23 AND ID(user) = 23
-        CREATE (post:Post { text:'Sleepless IN Seattle' })
-        CREATE (post)-[:FOLLOWS]->(node)
-        CREATE (post)-[:WRITTEN_BY]->user;
-        ";
-    }
 
-
-    
-    
     /**
-     * 
      * @param type $text
      * @param type $threadId
      */
     public static function createPost($text, $author, $threadId){
         $client = DatabaseHandler::getInstance();
         $queryString = "
-            MATCH (node)
-            WHERE node.id = {nodeId}
-            CREATE (post:Post { text: {text} })
-            CREATE (post)-[:FOLLOWS]->(node);
+            MATCH (before)-[r:PRECEDES]->(root), (user)
+            WHERE root.uid = {threadId} AND user.username = {author}
+            CREATE UNIQUE (before)-[:PRECEDES]->(p:Post{ uid: {uid}, text: {text} })-[:PRECEDES]->(root)
+            CREATE UNIQUE (p)-[:WRITTEN_BY]->(user)
+            DELETE r
+            RETURN p
         ";
         $param = array(
-            'title' => $title, 
-            'nodeId' => $threadId
+            'uid' => uniqid(),
+            'threadId' => $threadId,
+            'author' => $author,
+            'text' => $text,
         );
         $query = new Everyman\Neo4j\Cypher\Query($client, $queryString, $param);
         $result = $query->getResultSet();

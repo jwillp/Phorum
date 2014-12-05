@@ -20,11 +20,11 @@ class ViewRenderer {
         extract($data); 
         
         // On tente d'inclure la vue
-        $path = ROOT.'/core/views/'.$viewFile;
+        $path = VIEWS."/".$viewFile;
         if(file_exists($path)){
             include($path);
         }else{
-            die("Could not find View");
+            die("Impossible de trouver la vue specifiee: ". $path);
         }
 
     }

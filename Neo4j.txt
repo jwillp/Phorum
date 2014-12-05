@@ -1,8 +1,95 @@
 
 
-#VIDER BD
+# VIDER DB
 MATCH (n)
-DELETE n;
+OPTIONAL MATCH (n)-[r]-()
+DELETE n,r
 
 #CRÉER UN NODE
 CREATE (n:NomNode {champ: "valeur"})
+
+
+#CREATION d'un THREAD
+CREATE (root:Thread { title: "THREAD Root" })-[:PRECEDES]->(root)
+RETURN root
+
+
+# CRÉATION D'UN POST
+MATCH (before)-[r:PRECEDES]->(root), (user)
+WHERE root.title = "THREAD Root" AND user.username = "Joe"
+CREATE UNIQUE (before)-[:PRECEDES]->(p:Post{ value:75 })-[:PRECEDES]->(root)
+CREATE UNIQUE (p)-[:WRITTEN_BY]->(user)
+DELETE r
+
+
+# Obtention du dernier Post
+MATCH (before)-[r:PRECEDES]->(root)
+WHERE root.title = "THREAD Root"
+RETURN (before)
+
+
+# Obtention du permier Post
+MATCH (root)-[r:PRECEDES]->(after)
+WHERE root.title = "THREAD Root"
+RETURN (after)
+
+
+
+
+# OBTENTION DES POST D'UN THREAD
+START n=node(128) # ID DU THREAD
+MATCH n<-[r:PRECEDES*]- a
+RETURN a
+
+
+start a = node(66) 
+match (a)-[:PRECEDES*]->(b:Post) 
+return collect(distinct b);
+
+
+start t = node(*)
+WHERE t.uid = "547f8ce777628"
+match (t)-[:PRECEDES*]->(b:Post)
+return distinct b;
+
+
+
+start a = node(66)
+match (a)-[:PRECEDES*]->(b)
+return collect(distinct b) DESC;
+
+
+
+
+# OBTENTION DES THREADS AVEC LEUR POSTS
+MATCH (n:Thread), (t:Thread)-[:PRECEDES*]->(b:Post)
+RETURN n.title, collect(distinct b);
+
+
+
+
+
+# SUPPRESSION D'UN THREAD ET SES POSTS
+# 1. Suppression des relation entre les post et les users
+MATCH (p:Post)
+OPTIONAL MATCH (p)-[r:WRITTEN_BY]-(u)
+DELETE r;
+
+#2. Suppression des nodes n'ayant pas la relation WRITTEN_BY
+
+
+
+
+
+
+
+
+
+
+$queryString = "
+            MATCH (before)-[r:PRECEDES]->(root), (user)
+            WHERE root.uid = {threadId} AND user.username = \"{author}\"
+            CREATE UNIQUE (before)-[:PRECEDES]->(p:Post{ uid: \"{uid}\", text: \"{text}\" })-[:PRECEDES]->(root)
+            CREATE UNIQUE (p)-[:WRITTEN_BY]->(user)
+            DELETE r
+        ";
