@@ -1,2 +1,0 @@
-Plus facile pour développer une composante réseau social au forum
-Pourrait implémenter fontion de favoris facilement par relation

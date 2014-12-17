@@ -36,16 +36,16 @@ class DatabaseHandler
     }
 
     private static function logQuery($query, $parameters){
-        
+        /* REMPLACEMENT DES PARAMÈTRES CYPHER */
         foreach($parameters as $cle => $valeur){   
             $query = str_replace("{". $cle . "}", $valeur, $query);
         }
 
-        
-        
-        
+
         $myfile = fopen("cypher.cql", "a");
         fwrite($myfile, $query);
+        fwrite($myfile, "\n");
+        fwrite($myfile, "\n");
         fclose($myfile);
     }
     /**
