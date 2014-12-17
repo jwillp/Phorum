@@ -5,47 +5,119 @@
 
 
 body{
-    background-image: url('footer_lodyas.png');
+    
 }
 
-#wrapper{
-    
-    width: 80%;
-    margin: auto;
-    margin-top: 50px;
-    
-    
-    background-color: #000;
-    -webkit-box-shadow: 0px 0px 17px -1px rgba(0,0,0,1);
-    -moz-box-shadow: 0px 0px 17px -1px rgba(0,0,0,1);
-    box-shadow: 0px 0px 17px -1px rgba(0,0,0,1);
 
+body > div.jumbotron{
+    margin-bottom: 0;
 }
 
-#header{
+
+
+
+body > div.container{
+    background: #FFF;
+    border: 1px solid #d2d7dd
+}
+#footer{
+    height: 200px;
+}
+
+.navbar{
+    background-color:#f9f9f9;
+    border-bottom: 1px solid #d2d7dd;
+    margin-bottom: 0px;
     height: 100px;
-    background-color: #269abc;
-    color: #fff;
+
 }
 
-#header .nav-pills>li>a{
-    color: #337ab7;
-    background-color: #fff;
-    margin-left: 5px;
-    margin-right: 5px;
+#navbar ul{
+	margin-top: 25px;
 }
 
-#header ul{
+nav li{
     margin-right: 10px;
 }
 
-
-
-#body-page{
-    background-color: #fff;
-    min-height: 500px;
+.panel{
+    border-radius: 3px;
 }
 
-#footer{
-    height: 200px;
+
+nav li .btn-success {
+color: #fff;
+background-color: #333333;
+border-color: #222;
+}
+
+
+nav li .btn-success:hover {
+color: #333333;
+background-color: #fff;
+border-color: #333333;
+}
+
+
+nav li .btn-primary:hover {
+color: #337ab7;
+background-color: #fff;
+border-color: #337ab7;
+}
+
+
+
+body > div.container{
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+
+/* POST + THREADS */
+
+.media .panel {
+    width: 100%;
+}
+
+
+.row:nth-of-type(even) .post .panel-heading{
+    border-color: #333333;
+    background-color: #333;
+}
+.row:nth-of-type(even) .post{
+    border-color: #333333;
+}
+
+
+
+/* VIEW PROFILE */
+.profileView{
+    width: 75%;
+    margin: auto;
+    margin-top: 50px;
+    
+}
+#gravatar img{
+    width: 75%;
+}
+
+.profileView .profileInfo{
+    border-left: 1px solid #d2d7dd;
+    margin-bottom: 40px;
+}
+
+
+
+/*  LEARN MORE */
+.discusImg{
+    width: 100%;
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #d2d7dd;
+
+}
+
+.discusImg img{
+    margin: auto;
+    height: 150px;
 }

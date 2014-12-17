@@ -2,7 +2,7 @@
 
 
 
-
+<div class="container">
 
 <form action="createThread" method="post">
 <!-- Form Name -->
@@ -29,7 +29,7 @@
 
 
 
-
+</div>
 
 
 <?php include(VIEWS.'/footer.html.php') ?>

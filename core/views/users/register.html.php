@@ -40,7 +40,7 @@
   <body>
 
       <div class="well loginBox">
-          <form action="register" method="post">
+          <form action="register" autocomplete="off" method="post">
                 <h2 class="text-center">S'inscrire</h2>
                
                 <?php if (isset($usernameError)){ ?>

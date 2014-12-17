@@ -2,30 +2,40 @@
 
 
 
-
+<div class="container">
 
 <h1><?php echo($thread->getProperty('title')) ?></h1>
 
 
-<?php foreach($posts as $post){?>
-<div class="panel panel-primary">
+<?php foreach($posts as $post):?>
+<hr>
+    <div class="row">
+        <div class="col-md-1">
+            <a href="viewProfile?user=<?php echo($post['author']->getProperty('username')) ?>">
+                <img src="<?php echo($post['author']->getProperty('gravatar')) ?>" alt="<?php echo($post['author']->getProperty('username')) ?>" class="img-thumbnail">
+            </a>
+        </div>
+        <div class="col-md-11"><?php include(VIEWS.'/forum/postView.html.php'); ?></div>
+     </div>
     
     
-   
-    
-    <div class="panel-heading">
-          <h3 class="panel-title"><span class="glyphicon glyphicon-user" aria-hidden="true"></span>
-          <?php echo($post['author']->getProperty('username')) ?></h3>
-    </div>
+ <?php endforeach; ?>
+
+
+
+<?php 
+// VÉRIFICATION VERROU DU THREAD
+$labels = $thread->getLabels();
+foreach( $thread->getLabels() as $lbl){
+  $labels[] = $lbl->getName();
+}
+$threadLocked = in_array('LOCKED', $labels);
+?>
     
 
-  <div class="panel-body">
-    <?php echo($post['info']->getProperty('text')) ?>
-  </div>
-    
-
-  
-  <?php if ($post === end($posts) && $userConnected == true){ ?>
+              
+<!--- RÉPONSE -->
+  <?php if($userConnected == true && $threadLocked == false): ?>
         <div class="panel-footer">
             
             <form action="createPost" method="post">
@@ -41,17 +51,22 @@
             </form>
             
         </div>
-  <?php } ?>
-  
-  
+<?php endif; ?>
+              
+              
+              
+<!--- AMDIN PANEL --->         
+<?php if(@in_array("Admin", $_SESSION['user_roles'])): ?>
+      <?php if($threadLocked == true): ?>    
+            <a href="unlockThread?threadId=<?php echo($thread->getProperty('uid')) ?>" class="btn btn-success"><span class="glyphicon glyphicon-lock"></span> Déverrouiller</a> 
+      <?php else: ?>      
+            <a href="lockThread?threadId=<?php echo($thread->getProperty('uid')) ?>" class="btn btn-danger"><span class="glyphicon glyphicon-lock"></span> Verrouiller</a> 
+      <?php endif;?>
+<?php endif;?>               
+
+
+
 </div>
-
-<?php } ?>
-
-
-
-
-
 
 
 <?php include(VIEWS.'/footer.html.php') ?>

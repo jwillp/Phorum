@@ -5,6 +5,9 @@ MATCH (n)
 OPTIONAL MATCH (n)-[r]-()
 DELETE n,r
 
+#CRÉER RELATION
+CREATE UNIQUE (actor)-[r:ACTED_IN]->(movie:Movie { title:"Forrest Gump" })
+
 #CRÉER UN NODE
 CREATE (n:NomNode {champ: "valeur"})
 
